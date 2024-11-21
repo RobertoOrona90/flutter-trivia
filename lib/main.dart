@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trivia/QuestionProvider.dart';
-import 'package:trivia/widgets/CardListScreen.dart';
 import 'package:trivia/widgets/SecondaryListScreen.dart';
 
 void main() => runApp(const MyApp());
