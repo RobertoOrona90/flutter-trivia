@@ -4,6 +4,8 @@ import 'package:trivia/QuestionModel.dart';
 import 'package:trivia/QuestionProvider.dart';
 
 class CardListScreen extends StatelessWidget {
+  const CardListScreen({super.key});
+
   Widget buildCard(QuestionModel item) {
     return Card(
       elevation: 5,
