@@ -6,7 +6,8 @@ class AnswerdCard extends StatefulWidget {
   final double height;
   final double width;
 
-  const AnswerdCard({super.key, 
+  const AnswerdCard({
+    super.key,
     required this.answer,
     required this.height,
     required this.width,
@@ -35,29 +36,11 @@ class _AnswerCardState extends State<AnswerdCard> {
               color: defaultGrayColor,
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                IconButton(
-                  icon: const Icon(Icons.abc),
-                  onPressed: () {},
-                  color: const Color.fromARGB(68, 68, 68, 68),
-                ),
-                Column(
-                  children: <Widget>[
-                    Align(
-                        alignment: Alignment.topLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            widget.answer.text,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 18.0),
-                          ),
-                        )),
-                    answer_Result_Card(),
-                  ],
-                )
+              children: [
+                responseAnswer == "" ? const SizedBox.shrink() :  headerAnswerResponse(responseAnswer),
+                answerResultCardAlignment()
               ],
             ),
           ),
@@ -66,57 +49,80 @@ class _AnswerCardState extends State<AnswerdCard> {
       ),
     );
   }
+  
+  Row headerAnswerResponse(String answer) {
+    return Row(
+      children: [
+        Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                answer,
+                style:   TextStyle(color: answerColor, fontSize: 18.0),
+              ),
+            )),
+          IconButton(
+                    icon: responseAnswer == "Correcta" ? const Icon(Icons.check) : const Icon(Icons.warning_amber),
+                    onPressed: () {},
+                    color: answerColor),
+      ],
+    );
+  }
 
-  Align answer_Result_Card() {
+  Column answerResultCardAlignment() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        answerResultCard(widget.answer.text),
+      ],
+    );
+  }
+
+  Align answerResultCard(String answerText) {
     return Align(
-                    alignment: Alignment.topRight,
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 12.0),
-                      padding: const EdgeInsets.fromLTRB(8.0, 4.0, 12.0, 4.0),
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            bottomLeft: Radius.circular(10)),
-                        color: answerColor,
-                      ),
-                      child: answerResult(),
-                    ),
-                  );
-  }
-
-  Text answerResult() {
-    return Text(
-                        responseAnswer,
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
-                      );
-  }
-
-  Positioned imageCard() {
-    return Positioned(
-          child: Hero(
-            tag: widget.answer.image,
-            child: Image.network(
-              widget.answer.image,
-              height: widget.height / 1.7,
-              width: widget.width / 1.4,
-              fit: BoxFit.contain,
-            ),
+      alignment: Alignment.topRight,
+      child: Container(
+          margin: const EdgeInsets.only(bottom: 12.0),
+          padding: const EdgeInsets.fromLTRB(8.0, 4.0, 12.0, 4.0),
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(10), bottomLeft: Radius.circular(10)),
+            color: answerColor,
           ),
-        );
+          child: answerResult(answerText)),
+    );
+  }
+
+  Text answerResult(String answerText) {
+    return Text(
+      answerText,
+      style: const TextStyle(
+          color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+    );
+  }
+
+  Align imageCard() {
+    return Align(
+      alignment: Alignment.center,
+      child: Image.network(
+        widget.answer.image,
+        height: widget.height / 1.7,
+        width: widget.width / 1.4,
+        fit: BoxFit.contain,
+      ),
+    );
   }
 
   void showAnswer() {
-      setState(() {
-        if (widget.answer.isCorrect) {
-          answerColor = Colors.blue;
-          responseAnswer = "Correcta";
-        } else {
-          answerColor = Colors.red;
-          responseAnswer = "Incorrecta";
-        }
-      });
-    }
+    setState(() {
+      if (widget.answer.isCorrect) {
+        answerColor = Colors.green;
+        responseAnswer = "Correcta";
+      } else {
+        answerColor = Colors.red;
+        responseAnswer = "Incorrecta";
+      }
+    });
+  }
 }

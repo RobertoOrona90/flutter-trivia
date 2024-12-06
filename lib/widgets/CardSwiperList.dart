@@ -32,7 +32,7 @@ class CardSwiperList extends StatelessWidget {
               print(
                   "The itemCount is too big, we suggest use FractionPaginationBuilder instead of DotSwiperPaginationBuilder in this sitituation");
             }
-            Color activeColor = mediumYellow;
+            Color activeColor = Colors.white;
             Color color = Colors.grey.withOpacity(.3);
             double size = 10.0;
             double space = 5.0;
