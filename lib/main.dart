@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trivia/QuestionProvider.dart';
 import 'package:trivia/widgets/SecondaryListScreen.dart';
+import 'package:trivia/widgets/clubsScreen.dart';
 
 void main() => runApp(const MyApp());
 
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
             appBar: AppBar(
               title: const Text('Futbol App '),
             ),
+            //body: ClubsScreen(),
             body: SecondaryScreen(),
           ),
         ));

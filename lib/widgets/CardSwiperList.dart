@@ -12,7 +12,6 @@ class CardSwiperList extends StatelessWidget {
   Widget build(BuildContext context) {
     double cardHeight = MediaQuery.of(context).size.height / 2.7;
     double cardWidth = MediaQuery.of(context).size.width / 1.8;
-    const Color mediumYellow = Color(0xffFDB846);
     return SizedBox(
       height: cardHeight,
       child: Swiper(
@@ -33,7 +32,7 @@ class CardSwiperList extends StatelessWidget {
                   "The itemCount is too big, we suggest use FractionPaginationBuilder instead of DotSwiperPaginationBuilder in this sitituation");
             }
             Color activeColor = Colors.white;
-            Color color = Colors.grey.withOpacity(.3);
+            Color color = Colors.grey;
             double size = 10.0;
             double space = 5.0;
             if (config.indicatorLayout != PageIndicatorLayout.NONE &&

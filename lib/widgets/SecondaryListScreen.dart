@@ -21,10 +21,7 @@ class SecondaryScreen extends StatelessWidget {
                 ListTile(
                     leading: const Icon(Icons.question_answer),
                     title: Text(question.question)),
-                Card(
-                    child: CardSwiperList(
-                  answers: question.answers,
-                ))
+                Card(child: CardSwiperList(answers: question.answers))
               ],
             ),
           );
