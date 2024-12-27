@@ -24,8 +24,8 @@ class MyApp extends StatelessWidget {
             appBar: AppBar(
               title: const Text('Futbol App '),
             ),
-            //body: ClubsScreen(),
-            body: SecondaryScreen(),
+            body: ClubsScreen(),
+            //body: SecondaryScreen(),
           ),
         ));
   }
