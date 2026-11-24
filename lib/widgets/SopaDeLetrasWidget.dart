@@ -1,14 +1,45 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 
+enum DificultadSopa {
+  facil,
+  media,
+  dificil,
+}
+
+DificultadSopa dificultadPorEdad(int edad) {
+  if (edad <= 7) {
+    return DificultadSopa.facil;
+  }
+
+  if (edad <= 12) {
+    return DificultadSopa.media;
+  }
+
+  return DificultadSopa.dificil;
+}
+
+int tamanoTableroPorDificultad(DificultadSopa dificultad) {
+  switch (dificultad) {
+    case DificultadSopa.facil:
+      return 8;
+    case DificultadSopa.media:
+      return 10;
+    case DificultadSopa.dificil:
+      return 12;
+  }
+}
+
 class SopaDeLetrasWidget extends StatefulWidget {
   final int gridSize;
   final List<String> palabras;
+  final DificultadSopa dificultad;
 
   const SopaDeLetrasWidget({
     super.key,
     this.gridSize = 10,
-    required this.palabras
+    required this.palabras,
+    this.dificultad = DificultadSopa.media,
   });
 
   @override
@@ -27,15 +58,34 @@ class _SopaDeLetrasWidgetState extends State<SopaDeLetrasWidget> {
 
   // 8 direcciones posibles: (dFila, dCol)
   final List<Point<int>> _direcciones = const [
-    Point(0, 1),   // Derecha
-    Point(1, 0),   // Abajo
-    Point(1, 1),   // Diagonal abajo-derecha
-    Point(0, -1),  // Izquierda
-    Point(-1, 0),  // Arriba
+    Point(0, 1), // Derecha
+    Point(1, 0), // Abajo
+    Point(1, 1), // Diagonal abajo-derecha
+    Point(0, -1), // Izquierda
+    Point(-1, 0), // Arriba
     Point(-1, -1), // Diagonal arriba-izquierda
-    Point(-1, 1),  // Diagonal arriba-derecha
-    Point(1, -1),  // Diagonal abajo-izquierda
+    Point(-1, 1), // Diagonal arriba-derecha
+    Point(1, -1), // Diagonal abajo-izquierda
   ];
+
+  List<Point<int>> get _direccionesPermitidas {
+    switch (widget.dificultad) {
+      case DificultadSopa.facil:
+        return const [
+          Point(0, 1), // Derecha
+          Point(1, 0), // Abajo
+        ];
+      case DificultadSopa.media:
+        return const [
+          Point(0, 1), // Derecha
+          Point(1, 0), // Abajo
+          Point(1, 1), // Diagonal abajo-derecha
+          Point(-1, -1), // Diagonal arriba-izquierda
+        ];
+      case DificultadSopa.dificil:
+        return _direcciones;
+    }
+  }
 
   @override
   void initState() {
@@ -54,6 +104,7 @@ class _SopaDeLetrasWidgetState extends State<SopaDeLetrasWidget> {
     _seleccionActual.clear();
 
     // 2. Colocar cada palabra
+    final direcciones = _direccionesPermitidas;
     for (final palabra in _objetivos) {
       bool colocada = false;
       int intentos = 0;
@@ -62,7 +113,7 @@ class _SopaDeLetrasWidgetState extends State<SopaDeLetrasWidget> {
         intentos++;
         int f = random.nextInt(n);
         int c = random.nextInt(n);
-        Point<int> dir = _direcciones[random.nextInt(_direcciones.length)];
+        Point<int> dir = direcciones[random.nextInt(direcciones.length)];
 
         if (_puedeColocarse(palabra, f, c, dir)) {
           for (int k = 0; k < palabra.length; k++) {
@@ -83,7 +134,9 @@ class _SopaDeLetrasWidgetState extends State<SopaDeLetrasWidget> {
       }
     }
 
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   bool _puedeColocarse(String palabra, int f, int c, Point<int> dir) {
@@ -149,9 +202,8 @@ class _SopaDeLetrasWidgetState extends State<SopaDeLetrasWidget> {
   void _validarSeleccion() {
     if (_seleccionActual.isEmpty) return;
 
-    String palabraFormada = _seleccionActual
-        .map((p) => _tablero[p.x][p.y])
-        .join();
+    String palabraFormada =
+        _seleccionActual.map((p) => _tablero[p.x][p.y]).join();
     String palabraInvertida = palabraFormada.split('').reversed.join();
 
     for (final objetivo in _objetivos) {
@@ -198,6 +250,7 @@ class _SopaDeLetrasWidgetState extends State<SopaDeLetrasWidget> {
   void didUpdateWidget(covariant SopaDeLetrasWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.gridSize != widget.gridSize ||
+        oldWidget.dificultad != widget.dificultad ||
         oldWidget.palabras.toString() != widget.palabras.toString()) {
       _generarTablero();
     }
@@ -205,8 +258,7 @@ class _SopaDeLetrasWidgetState extends State<SopaDeLetrasWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final todasEncontradas =
-        _objetivos.isNotEmpty &&
+    final todasEncontradas = _objetivos.isNotEmpty &&
         _palabrasEncontradas.length == _objetivos.length;
 
     return Column(
@@ -220,7 +272,8 @@ class _SopaDeLetrasWidgetState extends State<SopaDeLetrasWidget> {
             children: [
               Text(
                 'Encontradas: ${_palabrasEncontradas.length} / ${_objetivos.length}',
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               IconButton(
                 onPressed: _generarTablero,
@@ -338,8 +391,7 @@ class _SopaDeLetrasWidgetState extends State<SopaDeLetrasWidget> {
                 child: Text(
                   palabra,
                   style: TextStyle(
-                    decoration:
-                        encontrada ? TextDecoration.lineThrough : null,
+                    decoration: encontrada ? TextDecoration.lineThrough : null,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

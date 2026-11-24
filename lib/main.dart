@@ -10,6 +10,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const edadUsuario = 7;
+    final dificultad = dificultadPorEdad(edadUsuario);
+    final gridSize = tamanoTableroPorDificultad(dificultad);
+
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(
@@ -23,17 +27,17 @@ class MyApp extends StatelessWidget {
             appBar: AppBar(
               title: const Text('Futbol App '),
             ),
-            body: const SingleChildScrollView(
+            body: SingleChildScrollView(
               child: SopaDeLetrasWidget(
-                gridSize: 10,
-                palabras: ['CASA', 'AUTO', 'GATO', 'PERRO', 'ARBOL'],
+                gridSize: gridSize,
+                dificultad: dificultad,
+                palabras: const ['COCA', 'FANTA', 'JOYA'],
               ),
             ),
           ),
         ));
   }
 }
-
 
 // void main() => runApp(const MaterialApp(
 //       debugShowCheckedModeBanner: false,
