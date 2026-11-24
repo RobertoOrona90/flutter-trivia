@@ -1,0 +1,51 @@
+{
+  // Configuraciones de ejecución por plataforma.
+  // Selecciona la configuración en el panel "Run and Debug" (Ctrl+Shift+D) y presiona F5.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Trivia - Windows",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "deviceId": "windows"
+    },
+    {
+      "name": "Trivia - macOS",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "deviceId": "macos"
+    },
+    {
+      "name": "Trivia - Android",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "deviceId": "android"
+    },
+    {
+      "name": "Trivia - iOS",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "deviceId": "ios"
+    },
+    {
+      "name": "Trivia - Android (release)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "deviceId": "android",
+      "flutterMode": "release"
+    },
+    {
+      "name": "Trivia - iOS (release)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "deviceId": "ios",
+      "flutterMode": "release"
+    }
+  ]
+}

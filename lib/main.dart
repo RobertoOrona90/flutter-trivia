@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:trivia/QuestionProvider.dart';
-import 'package:trivia/widgets/SopaDeLetrasWidget.dart';
+import 'package:trivia/features/SopaDeLetrasWidget.dart';
 
 void main() => runApp(const MyApp());
 
