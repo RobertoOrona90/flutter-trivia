@@ -8,7 +8,7 @@ class SopaDeLetrasWidget extends StatefulWidget {
   const SopaDeLetrasWidget({
     super.key,
     this.gridSize = 10,
-    this.palabras = const ['CASA', 'AUTO', 'GATO', 'PERRO', 'ARBOL']
+    required this.palabras
   });
 
   @override
