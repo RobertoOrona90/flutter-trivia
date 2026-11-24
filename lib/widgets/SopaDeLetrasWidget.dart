@@ -54,8 +54,7 @@ class _SopaDeLetrasWidgetState extends State<SopaDeLetrasWidget> {
     _seleccionActual.clear();
 
     // 2. Colocar cada palabra
-    for (String palabraRaw in widget.palabras) {
-      final palabra = palabraRaw.toUpperCase().trim();
+    for (final palabra in _objetivos) {
       bool colocada = false;
       int intentos = 0;
 
@@ -155,8 +154,7 @@ class _SopaDeLetrasWidgetState extends State<SopaDeLetrasWidget> {
         .join();
     String palabraInvertida = palabraFormada.split('').reversed.join();
 
-    for (String objetivoRaw in widget.palabras) {
-      String objetivo = objetivoRaw.toUpperCase().trim();
+    for (final objetivo in _objetivos) {
       if ((palabraFormada == objetivo || palabraInvertida == objetivo) &&
           !_palabrasEncontradas.contains(objetivo)) {
         setState(() {
@@ -173,10 +171,43 @@ class _SopaDeLetrasWidgetState extends State<SopaDeLetrasWidget> {
     });
   }
 
+  List<String> get _objetivos {
+    final objetivos = <String>{};
+
+    for (final palabraRaw in widget.palabras) {
+      var palabra = palabraRaw
+          .toUpperCase()
+          .trim()
+          .replaceAll(RegExp(r'[ÁÀÄÂ]'), 'A')
+          .replaceAll(RegExp(r'[ÉÈËÊ]'), 'E')
+          .replaceAll(RegExp(r'[ÍÌÏÎ]'), 'I')
+          .replaceAll(RegExp(r'[ÓÒÖÔ]'), 'O')
+          .replaceAll(RegExp(r'[ÚÙÜÛ]'), 'U')
+          .replaceAll('Ñ', 'N')
+          .replaceAll(RegExp(r'[^A-Z]'), '');
+
+      if (palabra.isNotEmpty && palabra.length <= widget.gridSize) {
+        objetivos.add(palabra);
+      }
+    }
+
+    return objetivos.toList();
+  }
+
+  @override
+  void didUpdateWidget(covariant SopaDeLetrasWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.gridSize != widget.gridSize ||
+        oldWidget.palabras.toString() != widget.palabras.toString()) {
+      _generarTablero();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final todasEncontradas =
-        _palabrasEncontradas.length == widget.palabras.length;
+        _objetivos.isNotEmpty &&
+        _palabrasEncontradas.length == _objetivos.length;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -188,7 +219,7 @@ class _SopaDeLetrasWidgetState extends State<SopaDeLetrasWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Encontradas: ${_palabrasEncontradas.length} / ${widget.palabras.length}',
+                'Encontradas: ${_palabrasEncontradas.length} / ${_objetivos.length}',
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               IconButton(
@@ -288,21 +319,30 @@ class _SopaDeLetrasWidgetState extends State<SopaDeLetrasWidget> {
             spacing: 8,
             runSpacing: 8,
             alignment: WrapAlignment.center,
-            children: widget.palabras.map((palabra) {
-              final encontrada =
-                  _palabrasEncontradas.contains(palabra.toUpperCase());
-              return Chip(
-                label: Text(
-                  palabra.toUpperCase(),
+            children: _objetivos.map((palabra) {
+              final encontrada = _palabrasEncontradas.contains(palabra);
+
+              return ElevatedButton(
+                onPressed: null,
+                style: ElevatedButton.styleFrom(
+                  disabledBackgroundColor:
+                      encontrada ? Colors.green : Colors.grey.shade700,
+                  disabledForegroundColor:
+                      encontrada ? Colors.white : Colors.grey.shade300,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text(
+                  palabra,
                   style: TextStyle(
                     decoration:
                         encontrada ? TextDecoration.lineThrough : null,
-                    color: encontrada ? Colors.white : Colors.black87,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                backgroundColor:
-                    encontrada ? Colors.green : Colors.grey.shade200,
               );
             }).toList(),
           ),
