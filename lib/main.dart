@@ -17,11 +17,19 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: ThemeData.dark(),
-          title: 'Material App',
+          // Tema claro: el texto oscuro se lee bien sobre el fondo amarillo.
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.amber),
+            scaffoldBackgroundColor: Colors.yellow.shade300,
+            appBarTheme: AppBarTheme(
+              backgroundColor: Colors.amber.shade600,
+              foregroundColor: Colors.black87,
+            ),
+          ),
+          title: 'Sopa de letras',
           home: Scaffold(
             appBar: AppBar(
-              title: const Text('Futbol App '),
+              title: const Text('Sopa de letras'),
             ),
             body: const SingleChildScrollView(
               child: SopaDeLetrasPorEdadPage(),

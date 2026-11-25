@@ -16,7 +16,7 @@ class LetraCelda extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (fondo, texto) = switch (estado) {
-      EstadoCelda.seleccionada => (Colors.amber.shade400, Colors.black87),
+      EstadoCelda.seleccionada => (Colors.orange.shade600, Colors.white),
       EstadoCelda.resuelta => (Colors.green.shade400, Colors.white),
       EstadoCelda.normal => (Colors.transparent, Colors.black87),
     };

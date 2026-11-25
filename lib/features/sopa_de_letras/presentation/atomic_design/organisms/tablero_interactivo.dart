@@ -56,9 +56,9 @@ class TableroInteractivo extends StatelessWidget {
             onPanEnd: (_) => onFin(),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.grey.shade200,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade400, width: 2),
+                border: Border.all(color: Colors.amber.shade700, width: 2),
               ),
               child: GridView.builder(
                 physics: const NeverScrollableScrollPhysics(),
