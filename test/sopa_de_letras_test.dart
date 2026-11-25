@@ -13,7 +13,9 @@ import 'package:trivia/features/sopa_de_letras/domain/entities/tablero.dart';
 import 'package:trivia/features/sopa_de_letras/domain/usecases/generar_sopa.dart';
 import 'package:trivia/features/sopa_de_letras/domain/usecases/preparar_objetivos.dart';
 import 'package:trivia/features/sopa_de_letras/domain/usecases/trazar_seleccion.dart';
+import 'package:trivia/features/sopa_de_letras/presentation/atomic_design/atoms/estilo_nivel.dart';
 import 'package:trivia/features/sopa_de_letras/presentation/atomic_design/atoms/letra_celda.dart';
+import 'package:trivia/features/sopa_de_letras/presentation/atomic_design/molecules/pildora_edad.dart';
 import 'package:trivia/features/sopa_de_letras/sopa_de_letras.dart';
 
 void main() {
@@ -23,6 +25,14 @@ void main() {
       expect(dificultadPorEdad(12), DificultadSopa.media);
       expect(dificultadPorEdad(13), DificultadSopa.dificil);
       expect(tamanoTableroPorDificultad(DificultadSopa.dificil), 12);
+    });
+
+    test('los rangos que se muestran coinciden con porEdad', () {
+      for (var e = kEdadMinima; e <= kEdadMaxima; e++) {
+        final nivel = DificultadSopa.porEdad(e);
+        expect(e, inInclusiveRange(nivel.edadMinimaNivel, nivel.edadMaximaNivel),
+            reason: '$e años');
+      }
     });
   });
 
@@ -128,22 +138,32 @@ void main() {
   testWidgets('cambiar la edad cambia la dificultad y el tablero',
       (tester) async {
     await tester.pumpWidget(const MaterialApp(
-      home: Scaffold(
-        body: SingleChildScrollView(
-          child: SopaDeLetrasPorEdadPage(palabras: ['SOL'], edadInicial: 7),
-        ),
-      ),
+      home: SopaDeLetrasPorEdadPage(palabras: ['SOL'], edadInicial: 7),
     ));
 
-    expect(find.textContaining('Nivel: Fácil'), findsOneWidget);
+    // Estado inicial y ayuda de primera vez.
+    expect(find.text('7 años'), findsOneWidget);
+    expect(find.text('Nivel Inicial'), findsOneWidget);
+    expect(
+        find.textContaining('Toca aquí para cambiar la edad'), findsOneWidget);
     expect(find.byType(LetraCelda), findsNWidgets(8 * 8));
 
-    await tester.tap(find.text('7 años'));
+    // Abrir la hoja: la ayuda desaparece.
+    await tester.tap(find.byType(PildoraEdad));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('10 años').last);
+    expect(find.text('¿Cuántos años tienes?'), findsOneWidget);
+    expect(find.textContaining('Toca aquí para cambiar la edad'), findsNothing);
+
+    // Girar la ruleta 3 posiciones: 7 -> 10 años (Explorador).
+    await tester.drag(find.text('7 años').last, const Offset(0, -120));
+    await tester.pumpAndSettle();
+    expect(find.text('Listo: 10 años'), findsOneWidget);
+
+    await tester.tap(find.text('Listo: 10 años'));
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('Nivel: Media'), findsOneWidget);
+    expect(find.text('10 años'), findsOneWidget);
+    expect(find.text('Nivel Explorador'), findsOneWidget);
     expect(
       tester
           .widget<SopaDeLetrasWidget>(find.byType(SopaDeLetrasWidget))

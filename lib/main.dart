@@ -27,14 +27,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
           title: 'Sopa de letras',
-          home: Scaffold(
-            appBar: AppBar(
-              title: const Text('Sopa de letras'),
-            ),
-            body: const SingleChildScrollView(
-              child: SopaDeLetrasPorEdadPage(),
-            ),
-          ),
+          home: const SopaDeLetrasPorEdadPage(),
         ));
   }
 }
