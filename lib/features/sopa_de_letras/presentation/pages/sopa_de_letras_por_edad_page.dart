@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import '../../data/repositorio_palabras_local.dart';
 import '../../domain/entities/dificultad_sopa.dart';
 import '../../domain/usecases/obtener_palabras_por_edad.dart';
+import '../atomic_design/atoms/texto_contador.dart';
 import '../atomic_design/molecules/banner_ayuda.dart';
 import '../atomic_design/molecules/pildora_edad.dart';
 import '../atomic_design/organisms/hoja_selector_edad.dart';
+import '../controller/sopa_de_letras_controller.dart';
 import 'sopa_de_letras_widget.dart';
 
 /// Pantalla: el jugador elige su edad desde la cápsula del AppBar y el
@@ -44,6 +46,30 @@ class _SopaDeLetrasPorEdadPageState extends State<SopaDeLetrasPorEdadPage> {
   /// al reabrir la app, guardarlo con almacenamiento persistente.
   bool _mostrarAyuda = true;
 
+  /// Lo comparten el tablero y el contador del AppBar.
+  final SopaDeLetrasController _controller = crearControladorSopa();
+
+  @override
+  void initState() {
+    super.initState();
+    _configurarPartida();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _configurarPartida() {
+    final dificultad = DificultadSopa.porEdad(_edad);
+    _controller.configurar(
+      palabras: _palabras,
+      tamano: dificultad.tamanoTablero,
+      dificultad: dificultad,
+    );
+  }
+
   List<String> _elegirPalabras() => widget.palabras ?? _obtenerPalabras(_edad);
 
   void _nuevaPartida({int? edad}) {
@@ -51,6 +77,7 @@ class _SopaDeLetrasPorEdadPageState extends State<SopaDeLetrasPorEdadPage> {
       _edad = edad ?? _edad;
       _palabras = _elegirPalabras();
       _partida++;
+      _configurarPartida();
     });
   }
 
@@ -69,7 +96,23 @@ class _SopaDeLetrasPorEdadPageState extends State<SopaDeLetrasPorEdadPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sopa de letras'),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Flexible(
+              child: Text('Sopa de letras', overflow: TextOverflow.ellipsis),
+            ),
+            const SizedBox(width: 12),
+            ListenableBuilder(
+              listenable: _controller,
+              builder: (context, _) => TextoContador(
+                encontradas: _controller.encontradas.length,
+                total: _controller.sopa.objetivos.length,
+                conEtiqueta: false,
+              ),
+            ),
+          ],
+        ),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 12),
@@ -86,12 +129,13 @@ class _SopaDeLetrasPorEdadPageState extends State<SopaDeLetrasPorEdadPage> {
               axisAlignment: -1,
               child: FadeTransition(opacity: animacion, child: child),
             ),
-          
           ),
           Expanded(
             child: SingleChildScrollView(
               child: SopaDeLetrasWidget(
                 key: ValueKey(_partida),
+                controller: _controller,
+                mostrarContador: false,
                 palabras: _palabras,
                 dificultad: dificultad,
                 gridSize: dificultad.tamanoTablero,

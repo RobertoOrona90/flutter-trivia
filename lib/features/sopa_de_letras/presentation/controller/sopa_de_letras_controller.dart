@@ -31,6 +31,10 @@ class SopaDeLetrasController extends ChangeNotifier {
   late List<String> _palabras;
   late int _tamano;
   late DificultadSopa _dificultad;
+  bool _configurado = false;
+
+  /// `true` después del primer [configurar].
+  bool get configurado => _configurado;
 
   SopaDeLetras get sopa => _sopa;
   Set<String> get encontradas => Set.unmodifiable(_encontradas);
@@ -49,6 +53,7 @@ class SopaDeLetrasController extends ChangeNotifier {
     _palabras = List.of(palabras);
     _tamano = tamano;
     _dificultad = dificultad;
+    _configurado = true;
     reiniciar();
   }
 

@@ -10,18 +10,23 @@ class EncabezadoSopa extends StatelessWidget {
     required this.encontradas,
     required this.total,
     required this.onReiniciar,
+    this.mostrarContador = true,
   });
 
   final int encontradas;
   final int total;
   final VoidCallback onReiniciar;
+  final bool mostrarContador;
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: mostrarContador
+          ? MainAxisAlignment.spaceBetween
+          : MainAxisAlignment.end,
       children: [
-        TextoContador(encontradas: encontradas, total: total),
+        if (mostrarContador)
+          TextoContador(encontradas: encontradas, total: total),
         BotonReiniciar(onPressed: onReiniciar),
       ],
     );

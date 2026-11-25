@@ -12,6 +12,15 @@ import '../atomic_design/organisms/tablero_interactivo.dart';
 import '../atomic_design/templates/sopa_de_letras_template.dart';
 import '../controller/sopa_de_letras_controller.dart';
 
+/// Crea el controlador con las dependencias de producción.
+SopaDeLetrasController crearControladorSopa() => SopaDeLetrasController(
+      generarSopa: GenerarSopa(
+        generador: GeneradorTableroAleatorio(),
+        prepararObjetivos:
+            const PrepararObjetivos(NormalizadorPalabrasEspanol()),
+      ),
+    );
+
 /// Página (atomic design) y punto de composición: conecta el controlador
 /// con la plantilla. Mantiene la misma API pública que antes.
 class SopaDeLetrasWidget extends StatefulWidget {
@@ -22,6 +31,7 @@ class SopaDeLetrasWidget extends StatefulWidget {
     this.dificultad = DificultadSopa.media,
     this.controller,
     this.onNuevaPartida,
+    this.mostrarContador = true,
   });
 
   final int gridSize;
@@ -34,6 +44,9 @@ class SopaDeLetrasWidget extends StatefulWidget {
   /// Opcional: qué hacer al pedir un tablero nuevo (p. ej. cambiar las
   /// palabras). Si es `null`, se reacomodan las mismas palabras.
   final VoidCallback? onNuevaPartida;
+
+  /// `false` cuando el contador se muestra en otro lugar (p. ej. el AppBar).
+  final bool mostrarContador;
 
   @override
   State<SopaDeLetrasWidget> createState() => _SopaDeLetrasWidgetState();
@@ -51,17 +64,10 @@ class _SopaDeLetrasWidgetState extends State<SopaDeLetrasWidget> {
 
   void _crearControlador() {
     _esPropio = widget.controller == null;
-    _controller = widget.controller ?? _controladorPorDefecto();
-    _configurar();
+    _controller = widget.controller ?? crearControladorSopa();
+    // Si quien lo inyecta ya lo configuró, no se genera otro tablero.
+    if (!_controller.configurado) _configurar();
   }
-
-  SopaDeLetrasController _controladorPorDefecto() => SopaDeLetrasController(
-        generarSopa: GenerarSopa(
-          generador: GeneradorTableroAleatorio(),
-          prepararObjetivos:
-              const PrepararObjetivos(NormalizadorPalabrasEspanol()),
-        ),
-      );
 
   void _configurar() => _controller.configurar(
         palabras: widget.palabras,
@@ -102,6 +108,7 @@ class _SopaDeLetrasWidgetState extends State<SopaDeLetrasWidget> {
             encontradas: c.encontradas.length,
             total: c.sopa.objetivos.length,
             onReiniciar: nuevaPartida,
+            mostrarContador: widget.mostrarContador,
           ),
           tablero: TableroInteractivo(
             tablero: c.sopa.tablero,

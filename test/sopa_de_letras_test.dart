@@ -30,7 +30,8 @@ void main() {
     test('los rangos que se muestran coinciden con porEdad', () {
       for (var e = kEdadMinima; e <= kEdadMaxima; e++) {
         final nivel = DificultadSopa.porEdad(e);
-        expect(e, inInclusiveRange(nivel.edadMinimaNivel, nivel.edadMaximaNivel),
+        expect(
+            e, inInclusiveRange(nivel.edadMinimaNivel, nivel.edadMaximaNivel),
             reason: '$e años');
       }
     });
@@ -141,18 +142,19 @@ void main() {
       home: SopaDeLetrasPorEdadPage(palabras: ['SOL'], edadInicial: 7),
     ));
 
-    // Estado inicial y ayuda de primera vez.
+    // Estado inicial: contador sin etiqueta junto al título.
     expect(find.text('7 años'), findsOneWidget);
     expect(find.text('Nivel Inicial'), findsOneWidget);
     expect(
-        find.textContaining('Toca aquí para cambiar la edad'), findsOneWidget);
+        find.descendant(of: find.byType(AppBar), matching: find.text('0 / 1')),
+        findsOneWidget);
+    expect(find.textContaining('Encontradas'), findsNothing);
     expect(find.byType(LetraCelda), findsNWidgets(8 * 8));
 
-    // Abrir la hoja: la ayuda desaparece.
+    // Abrir la hoja.
     await tester.tap(find.byType(PildoraEdad));
     await tester.pumpAndSettle();
     expect(find.text('¿Cuántos años tienes?'), findsOneWidget);
-    expect(find.textContaining('Toca aquí para cambiar la edad'), findsNothing);
 
     // Girar la ruleta 3 posiciones: 7 -> 10 años (Explorador).
     await tester.drag(find.text('7 años').last, const Offset(0, -120));
