@@ -27,6 +27,8 @@ class LetraCelda extends StatelessWidget {
       decoration: BoxDecoration(
         color: fondo,
         borderRadius: BorderRadius.circular(6),
+        // Borde negro suave: ni muy delgado ni muy grueso.
+        border: Border.all(color: Colors.black87, width: 1.5),
       ),
       alignment: Alignment.center,
       child: Text(
