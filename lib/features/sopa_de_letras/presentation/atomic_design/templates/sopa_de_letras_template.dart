@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 class SopaDeLetrasTemplate extends StatelessWidget {
   const SopaDeLetrasTemplate({
     super.key,
-    required this.encabezado,
+    this.encabezado,
     required this.tablero,
     required this.palabras,
     this.pie,
   });
 
-  final Widget encabezado;
+  final Widget? encabezado;
   final Widget tablero;
   final Widget palabras;
   final Widget? pie;
@@ -21,10 +21,11 @@ class SopaDeLetrasTemplate extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: encabezado,
-        ),
+        if (encabezado != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: encabezado,
+          ),
         Padding(
           padding: const EdgeInsets.all(16),
           child: tablero,

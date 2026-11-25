@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../data/repositorio_palabras_local.dart';
 import '../../domain/entities/dificultad_sopa.dart';
 import '../../domain/usecases/obtener_palabras_por_edad.dart';
+import '../atomic_design/atoms/boton_reiniciar.dart';
 import '../atomic_design/atoms/texto_contador.dart';
 import '../atomic_design/molecules/banner_ayuda.dart';
 import '../atomic_design/molecules/pildora_edad.dart';
@@ -114,10 +115,10 @@ class _SopaDeLetrasPorEdadPageState extends State<SopaDeLetrasPorEdadPage> {
           ],
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: PildoraEdad(edad: _edad, onTap: _abrirSelector),
-          ),
+          PildoraEdad(edad: _edad, onTap: _abrirSelector),
+          const SizedBox(width: 4),
+          BotonReiniciar(onPressed: _nuevaPartida),
+          const SizedBox(width: 4),
         ],
       ),
       body: Column(
@@ -135,7 +136,7 @@ class _SopaDeLetrasPorEdadPageState extends State<SopaDeLetrasPorEdadPage> {
               child: SopaDeLetrasWidget(
                 key: ValueKey(_partida),
                 controller: _controller,
-                mostrarContador: false,
+                mostrarEncabezado: false,
                 palabras: _palabras,
                 dificultad: dificultad,
                 gridSize: dificultad.tamanoTablero,

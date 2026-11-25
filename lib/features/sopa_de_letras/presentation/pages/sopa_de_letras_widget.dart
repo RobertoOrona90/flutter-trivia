@@ -31,7 +31,7 @@ class SopaDeLetrasWidget extends StatefulWidget {
     this.dificultad = DificultadSopa.media,
     this.controller,
     this.onNuevaPartida,
-    this.mostrarContador = true,
+    this.mostrarEncabezado = true,
   });
 
   final int gridSize;
@@ -45,8 +45,9 @@ class SopaDeLetrasWidget extends StatefulWidget {
   /// palabras). Si es `null`, se reacomodan las mismas palabras.
   final VoidCallback? onNuevaPartida;
 
-  /// `false` cuando el contador se muestra en otro lugar (p. ej. el AppBar).
-  final bool mostrarContador;
+  /// `false` cuando el contador y el botón de reinicio se muestran en
+  /// otro lugar (p. ej. el AppBar).
+  final bool mostrarEncabezado;
 
   @override
   State<SopaDeLetrasWidget> createState() => _SopaDeLetrasWidgetState();
@@ -104,12 +105,13 @@ class _SopaDeLetrasWidgetState extends State<SopaDeLetrasWidget> {
         final c = _controller;
         final nuevaPartida = widget.onNuevaPartida ?? c.reiniciar;
         return SopaDeLetrasTemplate(
-          encabezado: EncabezadoSopa(
-            encontradas: c.encontradas.length,
-            total: c.sopa.objetivos.length,
-            onReiniciar: nuevaPartida,
-            mostrarContador: widget.mostrarContador,
-          ),
+          encabezado: widget.mostrarEncabezado
+              ? EncabezadoSopa(
+                  encontradas: c.encontradas.length,
+                  total: c.sopa.objetivos.length,
+                  onReiniciar: nuevaPartida,
+                )
+              : null,
           tablero: TableroInteractivo(
             tablero: c.sopa.tablero,
             seleccion: c.seleccion,
