@@ -154,13 +154,7 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
               axisAlignment: -1,
               child: FadeTransition(opacity: animacion, child: child),
             ),
-            child: _mostrarAyuda
-                ? BannerAyuda(
-                    key: const ValueKey('ayuda'),
-                    onCerrar: () => setState(() => _mostrarAyuda = false),
-                  )
-                : const SizedBox(
-                    key: ValueKey('sin-ayuda'), width: double.infinity),
+            
           ),
           Expanded(
             child: Center(

@@ -86,13 +86,7 @@ class _SopaDeLetrasPorEdadPageState extends State<SopaDeLetrasPorEdadPage> {
               axisAlignment: -1,
               child: FadeTransition(opacity: animacion, child: child),
             ),
-            child: _mostrarAyuda
-                ? BannerAyuda(
-                    key: const ValueKey('ayuda'),
-                    onCerrar: () => setState(() => _mostrarAyuda = false),
-                  )
-                : const SizedBox(
-                    key: ValueKey('sin-ayuda'), width: double.infinity),
+          
           ),
           Expanded(
             child: SingleChildScrollView(
