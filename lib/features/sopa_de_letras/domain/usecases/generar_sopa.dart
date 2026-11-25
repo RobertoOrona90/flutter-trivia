@@ -20,11 +20,16 @@ class GenerarSopa {
     required DificultadSopa dificultad,
   }) {
     final objetivos = _prepararObjetivos(palabras, tamanoMaximo: tamano);
-    final tablero = _generador.generar(
+    final generado = _generador.generar(
       tamano: tamano,
       palabras: objetivos,
       direcciones: dificultad.direcciones,
     );
-    return SopaDeLetras(tablero: tablero, objetivos: objetivos);
+    // Solo se piden las palabras que realmente quedaron en el tablero,
+    // para que la partida siempre se pueda completar.
+    return SopaDeLetras(
+      tablero: generado.tablero,
+      objetivos: generado.colocadas,
+    );
   }
 }

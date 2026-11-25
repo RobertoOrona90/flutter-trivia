@@ -21,6 +21,7 @@ class SopaDeLetrasWidget extends StatefulWidget {
     required this.palabras,
     this.dificultad = DificultadSopa.media,
     this.controller,
+    this.onNuevaPartida,
   });
 
   final int gridSize;
@@ -29,6 +30,10 @@ class SopaDeLetrasWidget extends StatefulWidget {
 
   /// Opcional: inyecta un controlador propio (p. ej. en pruebas).
   final SopaDeLetrasController? controller;
+
+  /// Opcional: qué hacer al pedir un tablero nuevo (p. ej. cambiar las
+  /// palabras). Si es `null`, se reacomodan las mismas palabras.
+  final VoidCallback? onNuevaPartida;
 
   @override
   State<SopaDeLetrasWidget> createState() => _SopaDeLetrasWidgetState();
@@ -91,11 +96,12 @@ class _SopaDeLetrasWidgetState extends State<SopaDeLetrasWidget> {
       listenable: _controller,
       builder: (context, _) {
         final c = _controller;
+        final nuevaPartida = widget.onNuevaPartida ?? c.reiniciar;
         return SopaDeLetrasTemplate(
           encabezado: EncabezadoSopa(
             encontradas: c.encontradas.length,
             total: c.sopa.objetivos.length,
-            onReiniciar: c.reiniciar,
+            onReiniciar: nuevaPartida,
           ),
           tablero: TableroInteractivo(
             tablero: c.sopa.tablero,
@@ -109,9 +115,7 @@ class _SopaDeLetrasWidgetState extends State<SopaDeLetrasWidget> {
             palabras: c.sopa.objetivos,
             encontradas: c.encontradas,
           ),
-          pie: c.completado
-              ? BotonJugarDeNuevo(onPressed: c.reiniciar)
-              : null,
+          pie: c.completado ? BotonJugarDeNuevo(onPressed: nuevaPartida) : null,
         );
       },
     );

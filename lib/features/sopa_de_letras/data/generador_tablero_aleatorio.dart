@@ -20,22 +20,33 @@ class GeneradorTableroAleatorio implements GeneradorTablero {
   static const _vacio = '-';
 
   @override
-  Tablero generar({
+  TableroGenerado generar({
     required int tamano,
     required List<String> palabras,
     required List<Celda> direcciones,
   }) {
     final matriz = List.generate(tamano, (_) => List.filled(tamano, _vacio));
 
-    for (final palabra in palabras) {
-      _colocar(matriz, palabra, direcciones);
-    }
+    // Las palabras largas primero: es más fácil acomodarlas con el tablero vacío.
+    final ordenadas = [...palabras]
+      ..sort((a, b) => b.length.compareTo(a.length));
+    final colocadas = {
+      for (final palabra in ordenadas)
+        if (_colocar(matriz, palabra, direcciones)) palabra,
+    };
     _rellenar(matriz);
 
-    return Tablero(matriz);
+    return (
+      tablero: Tablero(matriz),
+      // Se respeta el orden original para mostrarlas en la lista.
+      colocadas: [
+        for (final p in palabras)
+          if (colocadas.contains(p)) p
+      ],
+    );
   }
 
-  void _colocar(
+  bool _colocar(
     List<List<String>> matriz,
     String palabra,
     List<Celda> direcciones,
@@ -50,9 +61,10 @@ class GeneradorTableroAleatorio implements GeneradorTablero {
         for (var k = 0; k < palabra.length; k++) {
           matriz[fila + k * dir.x][col + k * dir.y] = palabra[k];
         }
-        return;
+        return true;
       }
     }
+    return false;
   }
 
   bool _cabe(

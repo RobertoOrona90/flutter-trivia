@@ -7,6 +7,7 @@ import 'celda.dart';
 enum DificultadSopa {
   facil(
     tamanoTablero: 8,
+    cantidadPalabras: 5,
     direcciones: [
       Direccion.derecha,
       Direccion.abajo,
@@ -14,6 +15,7 @@ enum DificultadSopa {
   ),
   media(
     tamanoTablero: 10,
+    cantidadPalabras: 6,
     direcciones: [
       Direccion.derecha,
       Direccion.abajo,
@@ -23,15 +25,20 @@ enum DificultadSopa {
   ),
   dificil(
     tamanoTablero: 12,
+    cantidadPalabras: 7,
     direcciones: Direccion.todas,
   );
 
   const DificultadSopa({
     required this.tamanoTablero,
+    required this.cantidadPalabras,
     required this.direcciones,
   });
 
   final int tamanoTablero;
+
+  /// Cuántas palabras se esconden en cada partida.
+  final int cantidadPalabras;
   final List<Celda> direcciones;
 
   /// Determina la dificultad recomendada según la edad del jugador.
